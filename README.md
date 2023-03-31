@@ -26,7 +26,7 @@ In the meantime, I'd rather exploits/spoofing software/tools be made public so t
 * `CSteam3Server::SendUpdatedServerDetails` - **NT**
 * `CBaseServer::RejectConnection` - **NT**
 
-**T** - Tested
+**T** - Tested  
 **NT** - Not Tested
 
 ### Signatures Needing Updated
