@@ -32,7 +32,7 @@
 			"CBaseServer::ProcessConnectionlessPacket"
 			{
 				"library"	"engine"
-				"linux" 	"\x55\x89\xE5\x57\x56\x53\x81\xEC\x5C\x11\x00\x00"
+				"linux" 	"\x55\x89\xE5\x57\x56\x53\x81\xEC\xE8\x0A\x00\x00"
 			}
 			"CBaseServer::ForwardPacketsFromMasterServerUpdater"
 			{
