@@ -25,24 +25,26 @@ In the meantime, I'd rather exploits/spoofing software/tools be made public so t
 * `CNetChan::ProcessMessages` - **NT**
 * `CSteam3Server::SendUpdatedServerDetails` - **NT**
 * `CBaseServer::RejectConnection` - **NT**
-
+* `CBaseServer::GetNumFakeClients` - **NT**
+* `CBaseServer::GetMasterServerPlayerCounts` - **NT**
+* `CBaseServer::ForwardPacketsFromMasterServerUpdater` - **NT**
+* `CBaseServer::GetNumPlayers` - **NT**
+* `CBaseServer::GetNumProxies` - **NT**
+* `CBaseServer::FillServerInfo` - **NT**
+* `NET_ReceiveDatagram` - **NT**
+* `NET_ProcessSocket` - **NT**
+* `CBaseServer::GetNumHumanPlayers` - **NT**
+* `CBaseServer::GetNumClients` - **NT**
+ 
 **T** - Tested  
 **NT** - Not Tested
 
 ### Signatures Needing Updated
-* `CBaseServer::GetNumFakeClients`
-* `CBaseServer::GetNumHumanPlayers`
-* `CBaseServer::GetMasterServerPlayerCounts`
-* `CBaseServer::GetNumClients`
-* `CBaseServer::ForwardPacketsFromMasterServerUpdater`
-* `CBaseServer::GetNumPlayers`
-* `CBaseServer::GetNumProxies`
-* `CBaseServer::FillServerInfo`
 * `GetIP`
 * `GetPort`
-* `GetIPHostByteOrder`
-* `NET_ProcessSocket`
 * `NET_DiscardStaleSplitpackets`
 * `NET_GetLoopPacket`
-* `NET_ReceiveDatagram`
 * `NET_LagPacket`
+
+### Unchanged Signatures
+* `GetIPHostByteOrder`
