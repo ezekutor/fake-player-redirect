@@ -35,16 +35,16 @@ In the meantime, I'd rather exploits/spoofing software/tools be made public so t
 * `NET_ProcessSocket` - **NT**
 * `CBaseServer::GetNumHumanPlayers` - **NT**
 * `CBaseServer::GetNumClients` - **NT**
- 
+* `NET_GetLoopPacket` - **NT**
+* `NET_LagPacket` - **NT**
+* `NET_DiscardStaleSplitpackets` - **NT**
+
 **T** - Tested  
 **NT** - Not Tested
 
 ### Signatures Needing Updated
 * `GetIP`
 * `GetPort`
-* `NET_DiscardStaleSplitpackets`
-* `NET_GetLoopPacket`
-* `NET_LagPacket`
 
 ### Unchanged Signatures
 * `GetIPHostByteOrder`
