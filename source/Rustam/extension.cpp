@@ -33,7 +33,8 @@
 #include "inetchannel.h"
 #include "tier1/utlbuffer.h"
 #include "tier1/bitbuf.h"
-#include "tier1/ns_address.h"
+#include "tier1/netadr.h"
+#include "tier1/KeyValues.h"
 #include "steam/steamtypes.h"
 #include <filesystem.h>
 #include <ISDKTools.h>
@@ -242,18 +243,18 @@ DETOUR_DECL_MEMBER7(CDetour_NET_SendPacket, int, const ns_address&, to, const un
 		AppId_t appIdResponse = g_unSteamAppID ? g_unSteamAppID : 730;
 		
 		CUtlBuffer buf;
-		buf.EnsureCapacityMy( 1200 );
+		buf.EnsureCapacity( 1200 );
 		
 		buf.PutUnsignedInt( LittleDWord(0xFFFFFFFF) );
 		buf.PutUnsignedChar( 'I' );
 		buf.PutUnsignedChar( 17 ); // Hardcoded protocol version number
-		buf.PutStringMy( fs_hostname.c_str() );
+		buf.PutString( fs_hostname.c_str() );
 		
 		//gamehelpers->GetCurrentMap()
 		
-		buf.PutStringMy( gamehelpers->GetCurrentMap() );
-		buf.PutStringMy( "csgo" );
-		buf.PutStringMy( "Counter-Strike: Global Offensive" );
+		buf.PutString( gamehelpers->GetCurrentMap() );
+		buf.PutString( "csgo" );
+		buf.PutString( "Counter-Strike: Global Offensive" );
 
 		// The next field is a 16-bit version of the AppID.  If our AppID < 65536,
 		// then let's go ahead and put in in there, to maximize compatibility
@@ -295,7 +296,7 @@ DETOUR_DECL_MEMBER7(CDetour_NET_SendPacket, int, const ns_address&, to, const un
 		buf.PutUnsignedChar( fs_vac );
 		
 		//GetHostVersionString()
-		buf.PutStringMy( "1205" );
+		buf.PutString( "1205" );
 
 		// Write a byte with some flags that describe what is to follow.
 		byte nNewFlags = 0;
@@ -404,7 +405,7 @@ bool Sample::SDK_OnLoad(char *error, size_t maxlength, bool late)
 			fs_clientScale = sub->GetInt("clientscale");
 			fs_slots = sub->GetInt("slots");
 			fs_game = sub->GetString("game", NULL);
-			fs_bots = sub->GetInt("bot", NULL);
+			fs_bots = sub->GetInt("bot");
 			fs_vac = sub->GetInt("vac");
 			fs_tags = sub->GetString("tags", NULL);
 			fs_redirect = sub->GetInt("redirect");
