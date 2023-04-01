@@ -21,33 +21,32 @@
 #include "tier0/memdbgon.h"
 #include "tier1/utlbuffer.h"
 
-void netadr_t::ToString( char *pchBuffer, uint32 unBufferSize, bool onlyBase ) const
-{
+// const char*	netadr_t::ToString( bool onlyBase = false ) const
+// {
+// 	static char	s[64];
 
-	if (type == NA_LOOPBACK)
-	{
-		V_strncpy( pchBuffer, "loopback", unBufferSize );
-	}
-	else if (type == NA_BROADCAST)
-	{
-		V_strncpy( pchBuffer, "broadcast", unBufferSize );
-	}
-	else if (type == NA_IP)
-	{
-		if ( onlyBase )
-		{
-			V_snprintf( pchBuffer, unBufferSize, "%i.%i.%i.%i", ip[0], ip[1], ip[2], ip[3]);
-		}
-		else
-		{
-			V_snprintf( pchBuffer, unBufferSize, "%i.%i.%i.%i:%i", ip[0], ip[1], ip[2], ip[3], ntohs(port));
-		}
-	}
-	else
-	{
-		V_strncpy( pchBuffer, "unknown", unBufferSize );
-	}
-}
+// 	if (type == NA_LOOPBACK)
+// 	{
+// 		Q_strncpy (s, "loopback", sizeof( s ) );
+// 	}
+// 	else if (type == NA_BROADCAST)
+// 	{
+// 		Q_strncpy (s, "broadcast", sizeof( s ) );
+// 	}
+// 	else if (type == NA_IP)
+// 	{
+// 		if ( baseOnly)
+// 		{
+// 			Q_snprintf (s, sizeof( s ), "%i.%i.%i.%i", ip[0], ip[1], ip[2], ip[3]);
+// 		}
+// 		else
+// 		{
+// 			Q_snprintf (s, sizeof( s ), "%i.%i.%i.%i:%i", ip[0], ip[1], ip[2], ip[3], ntohs(port));
+// 		}
+// 	}
+
+// 	return s;
+// }
 
 const char * CSteamID::Render() const
 {
@@ -109,7 +108,7 @@ const char * CSteamID::Render() const
 	}
 	else if ( k_EAccountTypeIndividual == m_steamid.m_comp.m_EAccountType )
 	{
-		if ( m_steamid.m_comp.m_unAccountInstance != k_unSteamUserDesktopInstance )
+		if ( m_steamid.m_comp.m_unAccountInstance != k_unSteamUserDefaultInstance )
 			V_snprintf( pchBuf, k_cBufLen, "[U:%u:%u:%u]", m_steamid.m_comp.m_EUniverse, m_steamid.m_comp.m_unAccountID, m_steamid.m_comp.m_unAccountInstance );
 		else
 			V_snprintf( pchBuf, k_cBufLen, "[U:%u:%u]", m_steamid.m_comp.m_EUniverse, m_steamid.m_comp.m_unAccountID );
@@ -124,118 +123,127 @@ const char * CSteamID::Render() const
 	}
 	return pchBuf;
 }
-/*
-netadrtype_t netadr_t::GetType() const
-{
-	return type;
-}
 
-unsigned short netadr_t::GetPort() const
-{
-	return BigShort( port );
-}
-*/
-unsigned int netadr_t::GetIPNetworkByteOrder() const
-{
-	return *(unsigned int *)&ip;
-}
+// netadrtype_t netadr_t::GetType() const
+// {
+// 	return type;
+// }
 
-unsigned int netadr_t::GetIPHostByteOrder() const
-{
-	return BigDWord( GetIPNetworkByteOrder() );
-}
+// unsigned short netadr_t::GetPort() const
+// {
+// 	return BigShort( port );
+// }
 
-void CUtlBuffer::AddNullTermination( int nPut )
-{
-	if ( nPut > m_nMaxPut )
-	{
-		if ( !IsReadOnly() && ((m_Error & PUT_OVERFLOW) == 0)  )
-		{
-			// Add null termination value
-			if ( CheckPut( 1 ) )
-			{
-				m_Memory[nPut - m_nOffset] = 0;
-			}
-			else
-			{
-				// Restore the overflow state, it was valid before...
-				m_Error &= ~PUT_OVERFLOW;
-			}
-		}
-		m_nMaxPut = nPut;
-	}		
-}
+// unsigned int netadr_t::GetIPNetworkByteOrder() const
+// {
+// 	return *(unsigned int *)&ip;
+// }
+
+// unsigned int netadr_t::GetIPHostByteOrder() const
+// {
+// 	return BigDWord( GetIPNetworkByteOrder() );
+// }
+
+// unsigned long netadr_t::addr_ntohl() const
+// {
+// 	return ntohl( GetIP() );
+// }
+
+// unsigned long netadr_t::addr_htonl() const
+// {
+// 	return htonl( GetIP() );
+// }
+
+// void CUtlBuffer::AddNullTermination( void )
+// {
+// 	if ( m_Put > m_nMaxPut )
+// 	{
+// 		if ( !IsReadOnly() && ((m_Error & PUT_OVERFLOW) == 0)  )
+// 		{
+// 			// Add null termination value
+// 			if ( CheckPut( 1 ) )
+// 			{
+// 				m_Memory[m_Put - m_nOffset] = 0;
+// 			}
+// 			else
+// 			{
+// 				// Restore the overflow state, it was valid before...
+// 				m_Error &= ~PUT_OVERFLOW;
+// 			}
+// 		}
+// 		m_nMaxPut = m_Put;
+// 	}		
+// }
 
 AppId_t g_unSteamAppID = k_uAppIdInvalid;
 
 
-void CUtlBuffer::PutStringMy( const char* pString )
-{
-	if (!IsText())
-	{
-		if ( pString )
-		{
-			// Not text? append a null at the end.
-			int nLen = (int)V_strlen( pString ) + 1;
-			Put( pString, nLen * sizeof(char) );
-			return;
-		}
-		else
-		{
-			PutTypeBin<char>( 0 );
-		}
-	}
-	else if (pString)
-	{
-		int nTabCount = ( m_Flags & AUTO_TABS_DISABLED ) ? 0 : m_nTab;
-		if ( nTabCount > 0 )
-		{
-			if ( WasLastCharacterCR() )
-			{
-				PutTabs();
-			}
+// void CUtlBuffer::PutString( const char* pString )
+// {
+// 	if (!IsText())
+// 	{
+// 		if ( pString )
+// 		{
+// 			// Not text? append a null at the end.
+// 			size_t nLen = Q_strlen( pString ) + 1;
+// 			Put( pString, nLen * sizeof(char) );
+// 			return;
+// 		}
+// 		else
+// 		{
+// 			PutTypeBin<char>( 0 );
+// 		}
+// 	}
+// 	else if (pString)
+// 	{
+// 		int nTabCount = ( m_Flags & AUTO_TABS_DISABLED ) ? 0 : m_nTab;
+// 		if ( nTabCount > 0 )
+// 		{
+// 			if ( WasLastCharacterCR() )
+// 			{
+// 				PutTabs();
+// 			}
 
-			const char* pEndl = strchr( pString, '\n' );
-			while ( pEndl )
-			{
-				size_t nSize = (size_t)pEndl - (size_t)pString + sizeof(char);
-				Put( pString, (int)nSize );
-				pString = pEndl + 1;
-				if ( *pString )
-				{
-					PutTabs();
-					pEndl = strchr( pString, '\n' );
-				}
-				else
-				{
-					pEndl = NULL;
-				}
-			}
-		}
-		int nLen = (int)V_strlen( pString );
-		if ( nLen )
-		{
-			Put( pString, nLen * sizeof(char) );
-		}
-	}
-}
+// 			const char* pEndl = strchr( pString, '\n' );
+// 			while ( pEndl )
+// 			{
+// 				size_t nSize = (size_t)pEndl - (size_t)pString + sizeof(char);
+// 				Put( pString, (int)nSize );
+// 				pString = pEndl + 1;
+// 				if ( *pString )
+// 				{
+// 					PutTabs();
+// 					pEndl = strchr( pString, '\n' );
+// 				}
+// 				else
+// 				{
+// 					pEndl = NULL;
+// 				}
+// 			}
+// 		}
+// 		size_t nLen = Q_strlen( pString );
+// 		if ( nLen )
+// 		{
+// 			Put( pString, nLen * sizeof(char) );
+// 		}
+// 	}
+// }
 
-void CUtlBuffer::EnsureCapacityMy( int num )
-{
-	MEM_ALLOC_CREDIT();
-	// Add one extra for the null termination
-	num += 1;
-	if ( m_Memory.IsExternallyAllocated() )
-	{
-		if ( IsGrowable() && ( m_Memory.NumAllocated() < num ) )
-		{
-			m_Memory.ConvertToGrowableMemory( 0 );
-		}
-		else
-		{
-			num -= 1;
-		}
-	}
+// void CUtlBuffer::EnsureCapacity( int num )
+// {
+// 	// Add one extra for the null termination
+// 	num += 1;
+// 	if ( m_Memory.IsExternallyAllocated() )
+// 	{
+// 		if ( IsGrowable() && ( m_Memory.NumAllocated() < num ) )
+// 		{
+// 			m_Memory.ConvertToGrowableMemory( 0 );
+// 		}
+// 		else
+// 		{
+// 			num -= 1;
+// 		}
+// 	}
 
-	m_Memory.EnsureCapacity( num );
-}
+// 	m_Memory.EnsureCapacity( num );
+// }
