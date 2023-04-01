@@ -1,0 +1,10 @@
+[submodule "source/mmsource-1.10"]
+	path = source/mmsource-1.10
+	url = https://github.com/alliedmodders/metamod-source
+	branch = 1.10-dev
+[submodule "source/sourcemod"]
+	path = source/sourcemod
+	url = https://github.com/alliedmodders/sourcemod
+[submodule "source/hl2sdk-csgo"]
+	path = source/hl2sdk-csgo
+	url = https://github.com/alliedmodders/hl2sdk
