@@ -33,11 +33,8 @@
 #include "inetchannel.h"
 #include "tier1/utlbuffer.h"
 #include "tier1/bitbuf.h"
-<<<<<<< HEAD
-=======
 #include "tier1/netadr.h"
 #include "tier1/KeyValues.h"
->>>>>>> 75cdad49d79818f19cb51d5c08ec60432e1dc02a
 #include "steam/steamtypes.h"
 #include <filesystem.h>
 #include <ISDKTools.h>
